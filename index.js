@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const proModal = require("./models/proModal");
+const { process_params } = require("express/lib/router");
 dotenv.config();
 
 // setup express server
@@ -47,7 +48,7 @@ app.get("/getallmy", async (req, res) => {
 
     const pros = await proModal.find();
 
-    res.json(pros.length>0? pros : new Array({header:"none",tasks:new Array({name:"אין עדיין",complete:true})},{header:"none",tasks:new Array({name:"אין עדיין",complete:true})}));
+    res.json(pros);
 
   } catch (err) {
     res.status(500).send();
@@ -55,17 +56,86 @@ app.get("/getallmy", async (req, res) => {
 });
 
 
-app.post("/sendpro", async (req, res) => {
+app.post("/color", async (req, res) => {
   try {
-    const a =new proModal ({header:"none",tasks:new Array({name:"אין עדיין",complete:true})});
 
-    const saved = await a.save();
+    const {
+      
+      id,
+      i
+    } = req.body;
 
+    const pro = await proModal.findById(id);
+
+let wastasks =pro.tasks;
+let task=wastasks.splice(i,1);
+
+let av ={name:task[0].name,complete:!task[0].complete};
+
+wastasks.splice(i,0,av);
+
+const results = wastasks.filter(element => {
+  return typeof element === 'object' &&
+  !Array.isArray(element) &&
+  element !== null;
+});
+
+
+pro.tasks=results;
+
+
+const newaa =await pro.save();
+
+
+
+    res.json(newaa);
 
   } catch (err) {
+    console.log(err);
     res.status(500).send();
   }
 });
+
+
+app.post("/name", async (req, res) => {
+  try {
+    const {
+      id,
+      i,name
+    } = req.body;
+
+    const pro = await proModal.findById(id);
+
+let wastasks =pro.tasks;
+let task=wastasks.splice(i,1);
+
+let av ={name:name,complete:false};
+
+wastasks.splice(i,0,av);
+
+const results = wastasks.filter(element => {
+  return typeof element === 'object' &&
+  !Array.isArray(element) &&
+  element !== null;
+});
+
+
+pro.tasks=results;
+
+
+const newaa =await pro.save();
+
+
+    res.json(newaa);
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).send();
+  }
+});
+
+
+
 
 app.post("/sendtask", async (req, res) => {
   try {
@@ -91,21 +161,14 @@ app.post("/sendtask", async (req, res) => {
 
 app.post("/sendpro", async (req, res) => {
   try {
-    console.log("2s");
     const {
      pro
     } = req.body;
 
-    console.log("2s");
-
-    const newa ={header:pro,tasks:new Array()};
-    console.log("2");
+    const newa =new proModal({header:pro,tasks:new Array()});
 
     const newa2 = await newa.save();
-console.log("readyt");
     res.json(newa2);
-    console.log("done");
-
 
   } catch (err) {
     res.status(500).send();
