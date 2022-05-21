@@ -6,7 +6,7 @@ const cookieParser = require("cookie-parser");
 const proModal = require("./models/proModal");
 const { process_params } = require("express/lib/router");
 dotenv.config();
-s
+
 // setup express server
 
 const app = express();
