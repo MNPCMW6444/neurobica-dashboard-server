@@ -18,6 +18,8 @@ app.use(
       "http://localhost:3000",
       "https://fancy-salmiakki-0d1cda.netlify.app",
       "https://profit.neurobica.online",
+      "http://profit.neurobica.online",
+      "http://profit.neurobica.online/",
       "https://profit.neurobica.online/",
     ],
     credentials: true,
