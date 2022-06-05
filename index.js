@@ -17,6 +17,7 @@ app.use(
     origin: [
       "http://localhost:3000",
       "https://fancy-salmiakki-0d1cda.netlify.app",
+      "https://profit.neurobica.online",
     ],
     credentials: true,
   })
@@ -27,7 +28,6 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 
 // set up routers
-
 
 // connect to mongoDB
 
@@ -45,109 +45,84 @@ mongoose.connect(
 
 app.get("/getallmy", async (req, res) => {
   try {
-
     const pros = await proModal.find();
 
     res.json(pros);
-
   } catch (err) {
     res.status(500).send();
   }
 });
-
 
 app.post("/color", async (req, res) => {
   try {
-
-    const {
-      
-      id,
-      i
-    } = req.body;
+    const { id, i } = req.body;
 
     const pro = await proModal.findById(id);
 
-let wastasks =pro.tasks;
-let task=wastasks.splice(i,1);
+    let wastasks = pro.tasks;
+    let task = wastasks.splice(i, 1);
 
-let av ={name:task[0].name,complete:!task[0].complete};
+    let av = { name: task[0].name, complete: !task[0].complete };
 
-wastasks.splice(i,0,av);
+    wastasks.splice(i, 0, av);
 
-const results = wastasks.filter(element => {
-  return typeof element === 'object' &&
-  !Array.isArray(element) &&
-  element !== null;
-});
+    const results = wastasks.filter((element) => {
+      return (
+        typeof element === "object" &&
+        !Array.isArray(element) &&
+        element !== null
+      );
+    });
 
+    pro.tasks = results;
 
-pro.tasks=results;
-
-
-const newaa =await pro.save();
-
-
+    const newaa = await pro.save();
 
     res.json(newaa);
-
   } catch (err) {
     console.log(err);
     res.status(500).send();
   }
 });
-
 
 app.post("/name", async (req, res) => {
   try {
-    const {
-      id,
-      i,name
-    } = req.body;
+    const { id, i, name } = req.body;
 
     const pro = await proModal.findById(id);
 
-let wastasks =pro.tasks;
-let task=wastasks.splice(i,1);
+    let wastasks = pro.tasks;
+    let task = wastasks.splice(i, 1);
 
-let av ={name:name,complete:false};
+    let av = { name: name, complete: false };
 
-wastasks.splice(i,0,av);
+    wastasks.splice(i, 0, av);
 
-const results = wastasks.filter(element => {
-  return typeof element === 'object' &&
-  !Array.isArray(element) &&
-  element !== null;
-});
+    const results = wastasks.filter((element) => {
+      return (
+        typeof element === "object" &&
+        !Array.isArray(element) &&
+        element !== null
+      );
+    });
 
+    pro.tasks = results;
 
-pro.tasks=results;
-
-
-const newaa =await pro.save();
-
+    const newaa = await pro.save();
 
     res.json(newaa);
-
   } catch (err) {
     console.log(err);
     res.status(500).send();
   }
 });
 
-
-
-
 app.post("/sendtask", async (req, res) => {
   try {
+    const { name, id } = req.body;
+    const newa = await proModal.findById(id);
 
-    const {
-      name,
-      id
-    } = req.body;
-    const newa =await proModal.findById(id);
-
-    newa.tasks.push({name:name, complete:false});
-
+    newa.tasks.push({ name: name, complete: false });
 
     const snewa = await newa.save();
 
@@ -158,18 +133,14 @@ app.post("/sendtask", async (req, res) => {
   }
 });
 
-
 app.post("/sendpro", async (req, res) => {
   try {
-    const {
-     pro
-    } = req.body;
+    const { pro } = req.body;
 
-    const newa =new proModal({header:pro,tasks:new Array()});
+    const newa = new proModal({ header: pro, tasks: new Array() });
 
     const newa2 = await newa.save();
     res.json(newa2);
-
   } catch (err) {
     res.status(500).send();
     console.log(err);
