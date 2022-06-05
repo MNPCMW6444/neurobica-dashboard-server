@@ -21,6 +21,7 @@ app.use(
       "http://profit.neurobica.online",
       "http://profit.neurobica.online/",
       "https://profit.neurobica.online/",
+      "https://neurobica-dashboard.netlify.app",
     ],
     credentials: true,
   })
